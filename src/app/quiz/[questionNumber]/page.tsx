@@ -89,7 +89,7 @@ export default function QuestionPage() {
 
     setTimeout(() => {
       handleNext(newState);
-    }, 2000); // Wait 2 seconds before moving to next question
+    }, 1000); // Wait 1 second before moving to next question
   };
 
   const formatTime = (seconds: number) => {
