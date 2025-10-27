@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import Header from '@/components/Header';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 // export const metadata: Metadata = {
 //   title: 'TriviaQuest',
@@ -18,6 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
+  const isHomePage = pathname === '/';
   
   return (
     <html lang="en" className="">
@@ -29,10 +31,10 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
         <meta name="view-transition" content="same-origin" />
       </head>
-      <body className="font-body antialiased">
+      <body className={cn("font-body antialiased", !isHomePage && "grid-bg")}>
         <FirebaseClientProvider>
           <Header />
-          <main className="pt-14">
+          <main className={cn(!isHomePage && "pt-14")}>
             {children}
           </main>
           <Toaster />

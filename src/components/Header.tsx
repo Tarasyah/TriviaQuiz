@@ -32,6 +32,8 @@ export default function Header() {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const mobileMenuBtnRef = useRef<HTMLButtonElement>(null);
 
+  const isHomePage = pathname === '/';
+
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -92,15 +94,16 @@ export default function Header() {
       id="main-header"
       className={cn({
         'header-hidden': isHidden,
-        'scrolled': isScrolled
+        'scrolled': isScrolled,
+        'transparent-header': isHomePage
       })}
     >
-      <div className="header-gradient" />
+      {isHomePage && <div className="header-gradient" />}
       <div className="header-container">
         <div className="header-bg" />
         <div className="logo-container">
           <Link href="/">
-             <Logo className="w-auto h-full" />
+             <Logo className={cn("w-auto h-full", isHomePage ? "text-white" : "text-foreground")} />
           </Link>
         </div>
 

@@ -57,6 +57,8 @@
   body {
     @apply bg-background text-foreground;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .grid-bg {
     background-image:
       linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px),
       linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px);
@@ -106,11 +108,10 @@
   transition: all 0.3s ease-in-out;
   background-color: transparent;
 }
-#main-header.scrolled .header-bg {
-  background-color: transparent;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  border: none;
+#main-header.scrolled:not(.transparent-header) .header-bg {
+    background-color: hsla(var(--card), 0.8);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 }
 .logo-container { display: flex; align-items: center; }
 .logo-container a { 
@@ -133,6 +134,13 @@
   transition: color 0.3s;
   color: hsla(var(--foreground), 0.8);
 }
+#main-header.transparent-header .nav-link {
+    color: rgba(255,255,255,0.8);
+}
+#main-header.transparent-header .nav-link:hover {
+    color: white;
+}
+
 .nav-link:hover { color: hsl(var(--primary)); }
 
 #main-header.scrolled .nav-link {
@@ -173,6 +181,10 @@
   width: 1.25rem;
   color: hsl(var(--foreground));
 }
+
+#main-header.transparent-header #mobile-menu-btn svg {
+    color: white;
+}
 #main-header.scrolled #mobile-menu-btn svg { color: hsl(var(--foreground)); }
 
 .mobile-menu-dropdown {
@@ -209,7 +221,7 @@
   .header-container {
     max-width: 1280px;
   }
-  #main-header.scrolled .header-bg {
+  #main-header.scrolled:not(.transparent-header) .header-bg {
     margin: 0.5rem 1rem;
     border-radius: 9999px;
   }
