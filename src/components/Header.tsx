@@ -36,10 +36,11 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center">
         
+        <Link href="/" className="font-bold font-headline sm:inline-block mr-auto">
+            TriviaQuest
+        </Link>
+        
         <nav className="flex items-center space-x-6 text-sm font-medium">
-            <Link href="/" className="font-bold font-headline sm:inline-block">
-                TriviaQuest
-            </Link>
             <Button asChild variant="ghost">
                 <Link href="/quiz">Start Quiz</Link>
             </Button>

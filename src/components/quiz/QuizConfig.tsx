@@ -17,6 +17,7 @@ export default function QuizConfig() {
   };
 
   const timeOptions = [
+    { value: '60', label: '1 Minute' },
     { value: '180', label: '3 Minutes' },
     { value: '300', label: '5 Minutes' },
     { value: '600', label: '10 Minutes' },
