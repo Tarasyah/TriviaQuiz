@@ -4,7 +4,7 @@ import type { Question } from './types';
 
 export async function getTriviaQuestions(): Promise<Question[]> {
   try {
-    const response = await fetch('https://opentdb.com/api.php?amount=10&type=multiple&encode=base64');
+    const response = await fetch('https://opentdb.com/api.php?amount=10&type=multiple&encode=base64', { cache: 'no-store' });
     if (!response.ok) {
       // Instead of throwing, log the error and return empty array
       console.error('Failed to fetch trivia questions. Status:', response.status);
