@@ -13,7 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { History, LogOut } from 'lucide-react';
+import { History, LogOut, Swords } from 'lucide-react';
 import { signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 
@@ -36,27 +36,36 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center">
-        <Link href="/" className="mr-6 flex items-center space-x-2">
-          <Logo className="h-6 w-6 text-primary" />
-          <span className="font-bold font-headline sm:inline-block">
-            TriviaQuest
-          </span>
-        </Link>
-        <nav className="flex-1">
-          {user && (
-            <Link href="/history" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">
-              History
+        <div className="mr-auto flex items-center">
+            <Link href="/" className="mr-6 flex items-center space-x-2">
+            <Logo className="h-6 w-6 text-primary" />
+            <span className="font-bold font-headline sm:inline-block">
+                TriviaQuest
+            </span>
             </Link>
-          )}
-        </nav>
+            <nav className="hidden items-center space-x-6 text-sm font-medium md:flex">
+                <Link href="/quiz" className="transition-colors hover:text-foreground/80 text-foreground/60">
+                    Quiz
+                </Link>
+                {user && (
+                    <Link href="/history" className="transition-colors hover:text-foreground/80 text-foreground/60">
+                    History
+                    </Link>
+                )}
+            </nav>
+        </div>
+
         <div className="flex items-center space-x-2">
+            <Button asChild className="hidden md:inline-flex">
+                <Link href="/quiz"><Swords className="mr-2 h-4 w-4"/>Start Quiz</Link>
+            </Button>
           {isUserLoading ? (
-            <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
+            <div className="h-9 w-9 rounded-full bg-muted animate-pulse" />
           ) : user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                  <Avatar className="h-8 w-8">
+                <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+                  <Avatar className="h-9 w-9">
                     <AvatarFallback className="bg-primary text-primary-foreground">
                       {getInitials(user.email)}
                     </AvatarFallback>
@@ -73,6 +82,9 @@ export default function Header() {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                <DropdownMenuItem asChild className="md:hidden">
+                   <Link href="/quiz"><Swords className="mr-2 h-4 w-4" />Start Quiz</Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                    <Link href="/history"><History className="mr-2 h-4 w-4" />Quiz History</Link>
                 </DropdownMenuItem>
