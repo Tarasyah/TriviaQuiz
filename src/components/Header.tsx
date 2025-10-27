@@ -21,7 +21,6 @@ export default function Header() {
   const auth = useAuth();
   const router = useRouter();
 
-
   const handleLogout = async () => {
     await signOut(auth);
     router.push('/');
@@ -34,71 +33,76 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
+      <div className="container flex h-16 items-center justify-center">
         
-        <Link href="/" className="font-bold font-headline sm:inline-block">
+        <div className="flex items-center space-x-8">
+
+          <Link href="/" className="font-bold font-headline sm:inline-block">
             TriviaQuest
-        </Link>
-        
-        <nav className="flex items-center space-x-6 text-sm font-medium">
+          </Link>
+          
+          <nav className="flex items-center space-x-6 text-sm font-medium">
             <Button asChild variant="ghost">
-                <Link href="/quiz">Start Quiz</Link>
+              <Link href="/quiz">Start Quiz</Link>
             </Button>
             {user && (
-                <Link href="/history" className="transition-colors hover:text-foreground/80 text-foreground/60">
+              <Link href="/history" className="transition-colors hover:text-foreground/80 text-foreground/60">
                 History
-                </Link>
+              </Link>
             )}
-        </nav>
+          </nav>
 
-        <div className="flex items-center space-x-2">
-          {isUserLoading ? (
-            <div className="h-9 w-9 rounded-full bg-muted animate-pulse" />
-          ) : user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-                  <Avatar className="h-9 w-9">
-                    <AvatarFallback className="bg-primary text-primary-foreground">
-                      {getInitials(user.email)}
-                    </AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
-                <DropdownMenuLabel className="font-normal">
-                  <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">Signed in as</p>
-                    <p className="text-xs leading-none text-muted-foreground truncate">
-                      {user.email}
-                    </p>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                   <Link href="/history"><History className="mr-2 h-4 w-4" />Quiz History</Link>
-                </DropdownMenuItem>
-                 <DropdownMenuItem asChild>
-                   <Link href="/quiz"><Swords className="mr-2 h-4 w-4" />Start Quiz</Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout}>
+          <div className="flex items-center space-x-2">
+            {isUserLoading ? (
+              <div className="h-9 w-9 rounded-full bg-muted animate-pulse" />
+            ) : user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+                    <Avatar className="h-9 w-9">
+                      <AvatarFallback className="bg-primary text-primary-foreground">
+                        {getInitials(user.email)}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">Signed in as</p>
+                      <p className="text-xs leading-none text-muted-foreground truncate">
+                        {user.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                      <Link href="/history"><History className="mr-2 h-4 w-4" />Quiz History</Link>
+                  </DropdownMenuItem>
+                   <DropdownMenuItem asChild>
+                      <Link href="/quiz"><Swords className="mr-2 h-4 w-4" />Start Quiz</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" />
                     Log out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <>
-              <Button asChild variant="ghost">
-                <Link href="/login">Login</Link>
-              </Button>
-              <Button asChild>
-                <Link href="/signup">Sign Up</Link>
-              </Button>
-            </>
-          )}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Button asChild variant="ghost">
+                  <Link href="/login">Login</Link>
+                </Button>
+                <Button asChild>
+                  <Link href="/signup">Sign Up</Link>
+                </Button>
+              </>
+            )}
+          </div>
+
         </div>
+
       </div>
     </header>
   );
