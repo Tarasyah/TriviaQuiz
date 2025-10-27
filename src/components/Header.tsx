@@ -1,11 +1,8 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { useUser, useAuth } from '@/firebase';
-import { signOut } from 'firebase/auth';
 import { Button } from '@/components/ui/button';
+import { useUser, useAuth } from '@/firebase';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -15,130 +12,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Sun, Moon, LogOut, History, Swords, Menu, X } from 'lucide-react';
-import { Logo } from '@/components/icons/Logo';
-import { cn } from '@/lib/utils';
-
-// Helper for View Transitions
-const runViewTransition = (callback: () => void) => {
-  if (!(document as any).startViewTransition) {
-    callback();
-    return;
-  }
-  (document as any).startViewTransition(callback);
-};
+import { History, LogOut, Swords } from 'lucide-react';
+import { signOut } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
+import { Logo } from './icons/Logo';
 
 export default function Header() {
   const { user, isUserLoading } = useUser();
   const auth = useAuth();
   const router = useRouter();
-  const pathname = usePathname();
-
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isHidden, setIsHidden] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const lastScrollY = useRef(0);
-  const mobileMenuRef = useRef<HTMLDivElement>(null);
-  const mobileMenuBtnRef = useRef<HTMLButtonElement>(null);
-
-  const [theme, setTheme] = useState('dark');
-
-  // Set initial theme
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    setTheme(savedTheme);
-    if (savedTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, []);
-
-  const handleThemeToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
-    
-    if (!(document as any).startViewTransition) {
-        if (newTheme === 'dark') {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-        setTheme(newTheme);
-        localStorage.setItem('theme', newTheme);
-        return;
-    }
-
-    const { clientX: x, clientY: y } = e;
-    const endRadius = Math.hypot(
-      Math.max(x, window.innerWidth - x),
-      Math.max(y, window.innerHeight - y)
-    );
-
-    const transition = (document as any).startViewTransition(() => {
-        if (newTheme === 'dark') {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-        setTheme(newTheme);
-        localStorage.setItem('theme', newTheme);
-    });
-
-    transition.ready.then(() => {
-        const clipPath = [
-          `circle(0px at ${x}px ${y}px)`,
-          `circle(${endRadius}px at ${x}px ${y}px)`,
-        ];
-        document.documentElement.animate(
-          {
-            clipPath: newTheme === 'dark' ? clipPath : [...clipPath].reverse(),
-          },
-          {
-            duration: 500,
-            easing: "ease-in-out",
-            pseudoElement: newTheme === 'dark' ? "::view-transition-new(root)" : "::view-transition-old(root)",
-          }
-        );
-      });
-  };
-
-  // Scroll handler
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      setIsScrolled(currentScrollY > 10);
-
-      if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
-        setIsHidden(true);
-      } else {
-        setIsHidden(false);
-      }
-      lastScrollY.current = currentScrollY;
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Close mobile menu on outside click
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        mobileMenuRef.current &&
-        !mobileMenuRef.current.contains(event.target as Node) &&
-        mobileMenuBtnRef.current &&
-        !mobileMenuBtnRef.current.contains(event.target as Node)
-      ) {
-        setIsMobileMenuOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   const handleLogout = async () => {
     await signOut(auth);
-    setIsMobileMenuOpen(false);
     router.push('/');
   };
 
@@ -147,46 +32,31 @@ export default function Header() {
     return email.substring(0, 2).toUpperCase();
   };
 
-  const isHeroPage = pathname === '/';
-  
-  const navLinks = [
-    { href: '/quiz', label: 'Start Quiz' },
-    { href: '/history', label: 'History', auth: true },
-  ];
-
   return (
-    <header
-      id="main-header"
-      className={cn(
-        isScrolled && 'scrolled',
-        isHidden && 'header-hidden',
-        isHeroPage && 'on-hero'
-      )}
-    >
-      <div className="header-bg"></div>
-      <div className="header-gradient"></div>
-      <div className="header-container">
-        <div className="logo-container">
-          <Link href="/">
-            <Logo className="h-8 w-8 text-white transition-colors duration-300 data-[scrolled=true]:text-primary" data-scrolled={isScrolled} />
-            <span className="logo-text">TriviaQuest</span>
-          </Link>
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-16 items-center">
+        <div className="mr-auto flex items-center gap-4">
+            <Link href="/" className="flex items-center gap-2 font-bold font-headline">
+                <Logo className="h-6 w-6 text-primary" />
+                <span>TriviaQuest</span>
+            </Link>
         </div>
-
-        <nav className="desktop-nav">
-          {navLinks.map((link) => 
-            (!link.auth || user) && (
-              <Link key={link.href} href={link.href} className={cn('nav-link', pathname === link.href && 'active')}>
-                {link.label}
-              </Link>
-            )
+        
+        <nav className="flex items-center space-x-6 text-sm font-medium">
+          <Button asChild variant="ghost">
+            <Link href="/quiz">Start Quiz</Link>
+          </Button>
+          {user && (
+            <Link href="/history" className="transition-colors hover:text-foreground/80 text-foreground/60">
+              History
+            </Link>
           )}
         </nav>
 
-        <div className="actions-container">
-           {isUserLoading ? (
-             <div className="h-9 w-9 rounded-full bg-muted animate-pulse" />
-           ) : user ? (
+        <div className="flex flex-1 items-center justify-end space-x-2">
+          {isUserLoading ? (
+            <div className="h-9 w-9 rounded-full bg-muted animate-pulse" />
+          ) : user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-9 w-9 rounded-full">
@@ -208,10 +78,10 @@ export default function Header() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href="/history"><History className="mr-2 h-4 w-4" />Quiz History</Link>
+                    <Link href="/history"><History className="mr-2 h-4 w-4" />Quiz History</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/quiz"><Swords className="mr-2 h-4 w-4" />Start Quiz</Link>
+                 <DropdownMenuItem asChild>
+                    <Link href="/quiz"><Swords className="mr-2 h-4 w-4" />Start Quiz</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>
@@ -220,59 +90,16 @@ export default function Header() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-           ) : (
-             <Button asChild className='hidden md:inline-flex'>
+          ) : (
+            <>
+              <Button asChild variant="ghost">
                 <Link href="/login">Login</Link>
               </Button>
-           )}
-
-          <button onClick={handleThemeToggle} className="theme-toggle" aria-label="Toggle theme" data-theme-toggle>
-            <Sun className="sun" />
-            <Moon className="moon" />
-          </button>
-
-          <div className="mobile-menu-container md:hidden">
-            <button
-              id="mobile-menu-btn"
-              ref={mobileMenuBtnRef}
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-label="Toggle menu"
-            >
-              {isMobileMenuOpen ? <X/> : <Menu />}
-            </button>
-            <div
-              id="mobile-menu-dropdown"
-              ref={mobileMenuRef}
-              className={cn('mobile-menu-dropdown', isMobileMenuOpen && 'open')}
-            >
-                <div className="px-4 py-2 text-sm text-muted-foreground">
-                  Navigation
-                </div>
-              {navLinks.map((link) => 
-                (!link.auth || user) && (
-                  <Link key={link.href} href={link.href} className="menu-item" onClick={() => setIsMobileMenuOpen(false)}>
-                    {link.label}
-                  </Link>
-                )
-              )}
-              <div className="my-2 h-px bg-border/50"></div>
-              {user ? (
-                <>
-                  <div className="px-4 py-2 text-sm text-muted-foreground">
-                    {user.email}
-                  </div>
-                  <button onClick={handleLogout} className="menu-item w-full text-left">
-                    Log Out
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link href="/login" className="menu-item" onClick={() => setIsMobileMenuOpen(false)}>Login</Link>
-                  <Link href="/signup" className="menu-item" onClick={() => setIsMobileMenuOpen(false)}>Sign Up</Link>
-                </>
-              )}
-            </div>
-          </div>
+              <Button asChild>
+                <Link href="/signup">Sign Up</Link>
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </header>
