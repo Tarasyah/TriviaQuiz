@@ -120,7 +120,6 @@ export default function QuestionPage() {
         
         <Card>
           <CardHeader>
-            <CardDescription>{currentQuestion.category} ({currentQuestion.difficulty})</CardDescription>
             <CardTitle className="text-2xl font-headline" dangerouslySetInnerHTML={{ __html: currentQuestion.question }}/>
           </CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
