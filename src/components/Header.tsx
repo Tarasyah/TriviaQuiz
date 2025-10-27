@@ -35,16 +35,12 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
-        <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-2">
-            <span className="font-bold font-headline sm:inline-block">
+        
+        <nav className="flex items-center space-x-6 text-sm font-medium">
+            <Link href="/" className="font-bold font-headline sm:inline-block">
                 TriviaQuest
-            </span>
             </Link>
-        </div>
-
-        <nav className="hidden items-center space-x-6 text-sm font-medium md:flex">
-            <Button asChild variant="ghost" className="hidden md:inline-flex">
+            <Button asChild variant="ghost">
                 <Link href="/quiz">Start Quiz</Link>
             </Button>
             {user && (
