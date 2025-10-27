@@ -8,6 +8,10 @@ import { useUser } from '@/firebase';
 export default function Home() {
   const { user } = useUser();
 
+  const handleStart = () => {
+    localStorage.removeItem('triviaQuiz');
+  }
+
   return (
     <div className="relative min-h-screen">
       <section className="absolute inset-0 h-screen w-full">
@@ -29,7 +33,7 @@ export default function Home() {
             Test your knowledge, challenge your friends, and conquer the quest for wisdom.
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
-            <Button asChild size="lg" className="font-bold text-lg py-7 px-10 bg-primary/90 hover:bg-primary border border-primary-foreground/20 text-primary-foreground">
+            <Button asChild size="lg" className="font-bold text-lg py-7 px-10 bg-primary/90 hover:bg-primary border border-primary-foreground/20 text-primary-foreground" onClick={handleStart}>
               <Link href="/quiz">
                 <Swords className="mr-2 h-6 w-6" /> Start Your Quest
               </Link>
