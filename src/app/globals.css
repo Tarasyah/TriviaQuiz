@@ -110,6 +110,7 @@
   background-color: hsla(var(--card), 0.8);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  border: 1px solid hsl(var(--border));
 }
 .logo-container { display: flex; align-items: center; }
 .logo-container a { 
@@ -142,6 +143,10 @@
 #main-header.scrolled .nav-link.active {
   color: hsl(var(--primary));
   font-weight: 600;
+}
+
+#main-header.scrolled .desktop-nav .border-l {
+  border-color: hsl(var(--border));
 }
 
 .actions-container {
@@ -201,10 +206,10 @@
 
 @media (min-width: 768px) {
   .header-container {
-    width: 83.333333%;
     max-width: 1280px;
   }
   #main-header.scrolled .header-bg {
+    margin: 0.5rem 1rem;
     border-radius: 9999px;
   }
   
@@ -218,4 +223,9 @@
 
   .desktop-only { display: inline-flex; }
   .mobile-menu-container { display: none; }
+
+  /* Push the mobile menu button to the right on desktop, inside actions-container */
+  .actions-container {
+      display: none;
+  }
 }
