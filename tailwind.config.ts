@@ -9,9 +9,15 @@ export default {
   ],
   theme: {
     extend: {
+      backgroundImage: {
+        'grid-pattern': "linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px)",
+      },
+      backgroundSize: {
+        'grid-pattern': "40px 40px",
+      },
       fontFamily: {
-        body: ['Inter', 'sans-serif'],
-        headline: ['Inter', 'sans-serif'],
+        body: ['Poppins', 'sans-serif'],
+        headline: ['Poppins', 'sans-serif'],
         code: ['monospace'],
       },
       colors: {
@@ -95,5 +101,5 @@ export default {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [require('tailwindcss-animate'), require('react-dom-confetti')],
 } satisfies Config;
