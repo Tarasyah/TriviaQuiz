@@ -34,9 +34,9 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center">
+      <div className="container flex h-16 items-center justify-between">
         
-        <Link href="/" className="font-bold font-headline sm:inline-block mr-auto">
+        <Link href="/" className="font-bold font-headline sm:inline-block">
             TriviaQuest
         </Link>
         
@@ -51,7 +51,7 @@ export default function Header() {
             )}
         </nav>
 
-        <div className="flex flex-1 items-center justify-end space-x-2">
+        <div className="flex items-center space-x-2">
           {isUserLoading ? (
             <div className="h-9 w-9 rounded-full bg-muted animate-pulse" />
           ) : user ? (
