@@ -13,11 +13,11 @@ import { cn } from '@/lib/utils';
 
 // Helper for View Transitions
 const runViewTransition = (callback: () => void) => {
-  if (!document.startViewTransition) {
+  if (!(document as any).startViewTransition) {
     callback();
     return;
   }
-  document.startViewTransition(callback);
+  (document as any).startViewTransition(callback);
 };
 
 export default function Header() {
@@ -48,21 +48,50 @@ export default function Header() {
 
   const handleThemeToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
+    
+    if (!(document as any).startViewTransition) {
+        if (newTheme === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        setTheme(newTheme);
+        localStorage.setItem('theme', newTheme);
+        return;
+    }
+
     const { clientX: x, clientY: y } = e;
     const endRadius = Math.hypot(
       Math.max(x, window.innerWidth - x),
       Math.max(y, window.innerHeight - y)
     );
 
-    runViewTransition(() => {
-      if (newTheme === 'dark') {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-      setTheme(newTheme);
-      localStorage.setItem('theme', newTheme);
+    const transition = (document as any).startViewTransition(() => {
+        if (newTheme === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        setTheme(newTheme);
+        localStorage.setItem('theme', newTheme);
     });
+
+    transition.ready.then(() => {
+        const clipPath = [
+          `circle(0px at ${x}px ${y}px)`,
+          `circle(${endRadius}px at ${x}px ${y}px)`,
+        ];
+        document.documentElement.animate(
+          {
+            clipPath: newTheme === 'dark' ? clipPath : [...clipPath].reverse(),
+          },
+          {
+            duration: 500,
+            easing: "ease-in-out",
+            pseudoElement: newTheme === 'dark' ? "::view-transition-new(root)" : "::view-transition-old(root)",
+          }
+        );
+      });
   };
 
   // Scroll handler
@@ -150,11 +179,39 @@ export default function Header() {
            {isUserLoading ? (
              <div className="h-9 w-9 rounded-full bg-muted animate-pulse" />
            ) : user ? (
-            <Avatar className="h-9 w-9 hidden md:flex">
-              <AvatarFallback className="bg-primary text-primary-foreground">
-                {getInitials(user.email)}
-              </AvatarFallback>
-            </Avatar>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+                  <Avatar className="h-9 w-9">
+                    <AvatarFallback className="bg-primary text-primary-foreground">
+                      {getInitials(user.email)}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">Signed in as</p>
+                    <p className="text-xs leading-none text-muted-foreground truncate">
+                      {user.email}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/history"><History className="mr-2 h-4 w-4" />Quiz History</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/quiz"><Swords className="mr-2 h-4 w-4" />Start Quiz</Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
            ) : (
              <Button asChild className='hidden md:inline-flex'>
                 <Link href="/login">Login</Link>
@@ -173,13 +230,16 @@ export default function Header() {
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Toggle menu"
             >
-              <Menu />
+              {isMobileMenuOpen ? <X/> : <Menu />}
             </button>
             <div
               id="mobile-menu-dropdown"
               ref={mobileMenuRef}
               className={cn('mobile-menu-dropdown', isMobileMenuOpen && 'open')}
             >
+                <div className="px-4 py-2 text-sm text-muted-foreground">
+                  Navigation
+                </div>
               {navLinks.map((link) => 
                 (!link.auth || user) && (
                   <Link key={link.href} href={link.href} className="menu-item" onClick={() => setIsMobileMenuOpen(false)}>
