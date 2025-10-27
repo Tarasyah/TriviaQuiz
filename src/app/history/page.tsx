@@ -80,13 +80,13 @@ export default function HistoryPage() {
     if (!history) return [];
     return history.map(item => ({
       date: format(new Date(item.date), 'MMM d'),
-      percentage: Math.round((item.score / item.total) * 100),
+      score: item.score,
     }));
   }, [history]);
 
   const chartConfig = {
-    percentage: {
-      label: "Score",
+    score: {
+      label: "Correct Answers",
       color: "hsl(var(--primary))",
     },
   } satisfies ChartConfig
@@ -124,9 +124,9 @@ export default function HistoryPage() {
                                 <LineChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
                                     <CartesianGrid strokeDasharray="3 3" />
                                     <XAxis dataKey="date" tickLine={false} axisLine={false} stroke="hsl(var(--muted-foreground))" fontSize={12}/>
-                                    <YAxis unit="%" tickLine={false} axisLine={false} stroke="hsl(var(--muted-foreground))" fontSize={12}/>
+                                    <YAxis tickLine={false} axisLine={false} stroke="hsl(var(--muted-foreground))" fontSize={12}/>
                                     <ChartTooltip content={<ChartTooltipContent />} />
-                                    <Line type="monotone" dataKey="percentage" stroke="hsl(var(--primary))" strokeWidth={2} dot={{r: 4, fill: "hsl(var(--primary))"}} />
+                                    <Line type="monotone" dataKey="score" stroke="hsl(var(--primary))" strokeWidth={2} dot={{r: 4, fill: "hsl(var(--primary))"}} />
                                 </LineChart>
                             </ResponsiveContainer>
                         </ChartContainer>
