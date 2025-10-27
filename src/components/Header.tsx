@@ -40,14 +40,14 @@ export default function Header() {
             <Link href="/" className="font-bold font-headline sm:inline-block">
                 TriviaQuest
             </Link>
-            <Button asChild variant="ghost">
-                <Link href="/quiz">Start Quiz</Link>
-            </Button>
             {user && (
                 <Link href="/history" className="transition-colors hover:text-foreground/80 text-foreground/60">
                 History
                 </Link>
             )}
+            <Button asChild variant="ghost">
+                <Link href="/quiz">Start Quiz</Link>
+            </Button>
         </nav>
 
         <div className="flex items-center space-x-2">
@@ -74,11 +74,11 @@ export default function Header() {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild className="md:hidden">
-                   <Link href="/quiz"><Swords className="mr-2 h-4 w-4" />Start Quiz</Link>
-                </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                    <Link href="/history"><History className="mr-2 h-4 w-4" />Quiz History</Link>
+                </DropdownMenuItem>
+                 <DropdownMenuItem asChild>
+                   <Link href="/quiz"><Swords className="mr-2 h-4 w-4" />Start Quiz</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>
