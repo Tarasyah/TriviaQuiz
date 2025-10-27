@@ -20,7 +20,7 @@ export default function RootLayout({
   const pathname = usePathname();
   
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="">
       <head>
         <title>TriviaQuest</title>
         <meta name="description" content="A fun and fast-paced trivia game." />
