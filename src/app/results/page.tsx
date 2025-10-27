@@ -3,8 +3,8 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Question, QuizResult } from '@/lib/types';
-import { useUser, useFirestore, addDocumentNonBlocking } from '@/firebase';
-import { collection } from 'firebase/firestore';
+import { useUser, useFirestore } from '@/firebase';
+import { collection, addDoc } from 'firebase/firestore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Trophy, Repeat, Home, Check, X, AlertCircle, Eye } from 'lucide-react';
@@ -21,6 +21,8 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
+
 
 interface QuizState {
   questions: Question[];
@@ -33,6 +35,7 @@ export default function ResultsPage() {
   const firestore = useFirestore();
   const [quizState, setQuizState] = useState<QuizState | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     const storedState = localStorage.getItem('triviaQuiz');
@@ -64,24 +67,36 @@ export default function ResultsPage() {
   }, [quizState]);
 
   useEffect(() => {
-    if (quizState && user && firestore) {
-      if (score / quizState.questions.length >= 0.7) {
-        setShowConfetti(true);
-      }
-
-      const result: Omit<QuizResult, 'id'> = {
-        score,
-        incorrect,
-        unanswered,
-        total: quizState.questions.length,
-        date: new Date().toISOString(),
-        userId: user.uid,
-      };
-
-      const historyColRef = collection(firestore, 'users', user.uid, 'quiz_history');
-      addDocumentNonBlocking(historyColRef, result);
+    const saveResult = async () => {
+        if (quizState && user && firestore) {
+          if (score / quizState.questions.length >= 0.7) {
+            setShowConfetti(true);
+          }
+    
+          const result: Omit<QuizResult, 'id'> = {
+            score,
+            incorrect,
+            unanswered,
+            total: quizState.questions.length,
+            date: new Date().toISOString(),
+            userId: user.uid,
+          };
+    
+          try {
+            const historyColRef = collection(firestore, 'users', user.uid, 'quiz_history');
+            await addDoc(historyColRef, result);
+          } catch (error) {
+              console.error("Error saving quiz result: ", error);
+              toast({
+                  variant: "destructive",
+                  title: "Error",
+                  description: "Could not save your quiz result.",
+              });
+          }
+        }
     }
-  }, [quizState, user, score, incorrect, unanswered, firestore]);
+    saveResult();
+  }, [quizState, user, firestore, score, incorrect, unanswered, toast]);
 
   const clearQuizAndNavigate = (path: string) => {
     localStorage.removeItem('triviaQuiz');
@@ -159,13 +174,14 @@ export default function ResultsPage() {
                             <p
                               className={cn(
                                 'p-3 rounded-md text-sm',
+                                userAnswer === null ? 'bg-yellow-100 dark:bg-yellow-900/40 border border-yellow-400' :
                                 isCorrect ? 'bg-green-100 dark:bg-green-900/40 border border-green-400' : 'bg-red-100 dark:bg-red-900/40 border border-red-400'
                               )}
                             >
                               <span className="font-bold">Your Answer: </span>
                               <span dangerouslySetInnerHTML={{ __html: userAnswer ?? 'Not Answered' }} />
                             </p>
-                            {!isCorrect && (
+                            {!isCorrect && userAnswer !== null && (
                               <p className="p-3 rounded-md text-sm bg-green-100 dark:bg-green-900/40 border border-green-400">
                                 <span className="font-bold">Correct Answer: </span>
                                 <span dangerouslySetInnerHTML={{ __html: question.correct_answer }} />
