@@ -113,7 +113,7 @@ export default function Header() {
       )}
     >
       {/* Menggunakan container untuk lebar yang konsisten */}
-      <div className="container flex h-16 items-center justify-between"> 
+      <div className="container flex h-14 items-center justify-between"> 
         
         {/* Logo */}
         <div className="flex items-center">
