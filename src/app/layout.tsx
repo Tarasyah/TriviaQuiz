@@ -33,7 +33,7 @@ export default function RootLayout({
       <body className="font-body antialiased">
         <FirebaseClientProvider>
           {!isQuizPage && <Header />}
-          <main>
+          <main className="pt-20">
             {children}
           </main>
           <Toaster />
