@@ -18,8 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
-  const isQuizPage = pathname.startsWith('/quiz/') && pathname.length > '/quiz/'.length;
-
+  
   return (
     <html lang="en" className="dark">
       <head>
@@ -32,7 +31,7 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased">
         <FirebaseClientProvider>
-          {!isQuizPage && <Header />}
+          <Header />
           <main className="pt-20">
             {children}
           </main>
