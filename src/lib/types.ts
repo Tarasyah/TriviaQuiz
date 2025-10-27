@@ -16,6 +16,8 @@ export interface QuizResult {
   id: string;
   userId: string;
   score: number;
+  incorrect: number;
+  unanswered: number;
   total: number;
   date: string;
 }

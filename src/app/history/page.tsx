@@ -56,7 +56,10 @@ export default function HistoryPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[100px]">Score</TableHead>
+                  <TableHead>Correct</TableHead>
+                  <TableHead>Incorrect</TableHead>
+                  <TableHead>Unanswered</TableHead>
+                  <TableHead>Total</TableHead>
                   <TableHead>Percentage</TableHead>
                   <TableHead>Date</TableHead>
                 </TableRow>
@@ -64,7 +67,10 @@ export default function HistoryPage() {
               <TableBody>
                 {history.map((result) => (
                   <TableRow key={result.id}>
-                    <TableCell className="font-medium">{result.score} / {result.total}</TableCell>
+                    <TableCell className="font-medium text-green-600">{result.score}</TableCell>
+                    <TableCell className="text-red-600">{result.incorrect}</TableCell>
+                    <TableCell className="text-yellow-600">{result.unanswered}</TableCell>
+                    <TableCell>{result.total}</TableCell>
                     <TableCell>{Math.round((result.score / result.total) * 100)}%</TableCell>
                     <TableCell>{format(new Date(result.date), 'PPpp')}</TableCell>
                   </TableRow>

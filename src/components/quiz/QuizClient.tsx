@@ -7,35 +7,43 @@ import { Loader2 } from 'lucide-react';
 
 interface QuizClientProps {
   questions: Question[];
+  timeLimit: number | null;
 }
 
-export default function QuizClient({ questions }: QuizClientProps) {
+export default function QuizClient({ questions, timeLimit }: QuizClientProps) {
   const router = useRouter();
 
   useEffect(() => {
     // Check for existing quiz
     const existingQuiz = localStorage.getItem('triviaQuiz');
     if (existingQuiz) {
+      try {
         const { currentQuestionIndex } = JSON.parse(existingQuiz);
         // Resume existing quiz
         router.replace(`/quiz/${currentQuestionIndex + 1}`);
         return;
+      } catch (e) {
+        // Fallback for corrupted data
+        localStorage.removeItem('triviaQuiz');
+      }
     }
 
     // Start a new quiz
     const quizState = {
       questions,
-      answers: [],
+      answers: Array(questions.length).fill(null),
       currentQuestionIndex: 0,
+      startTime: Date.now(),
+      timeLimit,
     };
     localStorage.setItem('triviaQuiz', JSON.stringify(quizState));
     router.replace('/quiz/1');
-  }, [questions, router]);
+  }, [questions, router, timeLimit]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)]">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
-        <p className="mt-4 text-lg text-muted-foreground">Preparing your quiz...</p>
+      <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      <p className="mt-4 text-lg text-muted-foreground">Preparing your quiz...</p>
     </div>
   );
 }
