@@ -44,8 +44,8 @@ export default function Header() {
             </span>
             </Link>
             <nav className="hidden items-center space-x-6 text-sm font-medium md:flex">
-                <Link href="/quiz" className="transition-colors hover:text-foreground/80 text-foreground/60">
-                    Quiz
+                <Link href="/quiz" className="transition-colors hover:text-foreground/80 text-foreground">
+                    Start Quiz
                 </Link>
                 {user && (
                     <Link href="/history" className="transition-colors hover:text-foreground/80 text-foreground/60">
@@ -56,9 +56,6 @@ export default function Header() {
         </div>
 
         <div className="flex items-center space-x-2">
-            <Button asChild className="hidden md:inline-flex">
-                <Link href="/quiz"><Swords className="mr-2 h-4 w-4"/>Start Quiz</Link>
-            </Button>
           {isUserLoading ? (
             <div className="h-9 w-9 rounded-full bg-muted animate-pulse" />
           ) : user ? (
