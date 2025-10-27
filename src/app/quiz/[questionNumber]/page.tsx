@@ -63,34 +63,32 @@ export default function QuestionPage() {
     return [...currentQuestion.incorrect_answers, currentQuestion.correct_answer].sort(() => Math.random() - 0.5);
   }, [currentQuestion]);
 
-  const handleNext = useCallback(() => {
-    if (!quizState) return;
-    const nextIndex = quizState.currentQuestionIndex + 1;
-    const newState = { ...quizState, currentQuestionIndex: nextIndex };
+  const handleNext = useCallback((currentState: QuizState) => {
+    const nextIndex = currentState.currentQuestionIndex + 1;
+    const newState = { ...currentState, currentQuestionIndex: nextIndex };
     localStorage.setItem('triviaQuiz', JSON.stringify(newState));
 
-    if (nextIndex < quizState.questions.length) {
+    if (nextIndex < currentState.questions.length) {
       router.push(`/quiz/${nextIndex + 1}`);
     } else {
       router.push('/results');
     }
-  }, [quizState, router]);
+  }, [router]);
   
   const handleAnswer = (answer: string) => {
-    if (isAnswered) return;
+    if (isAnswered || !quizState) return;
     setSelectedAnswer(answer);
     setIsAnswered(true);
 
-    if (quizState) {
-      const newAnswers = [...quizState.answers];
-      newAnswers[questionNumber - 1] = answer;
-      const newState = { ...quizState, answers: newAnswers };
-      setQuizState(newState);
-      localStorage.setItem('triviaQuiz', JSON.stringify(newState));
-    }
+    const newAnswers = [...quizState.answers];
+    newAnswers[questionNumber - 1] = answer;
+    const newState = { ...quizState, answers: newAnswers };
+    
+    setQuizState(newState);
+    localStorage.setItem('triviaQuiz', JSON.stringify(newState));
 
     setTimeout(() => {
-      handleNext();
+      handleNext(newState);
     }, 2000); // Wait 2 seconds before moving to next question
   };
 
