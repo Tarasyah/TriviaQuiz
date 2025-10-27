@@ -1,34 +1,40 @@
+'use client';
+
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import Header from '@/components/Header';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
+import { usePathname } from 'next/navigation';
 
-export const metadata: Metadata = {
-  title: 'TriviaQuest',
-  description: 'A fun and fast-paced trivia game.',
-};
+// export const metadata: Metadata = {
+//   title: 'TriviaQuest',
+//   description: 'A fun and fast-paced trivia game.',
+// };
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname();
+  
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="dark">
       <head>
+        <title>TriviaQuest</title>
+        <meta name="description" content="A fun and fast-paced trivia game." />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+        <meta name="view-transition" content="same-origin" />
       </head>
-      <body className="font-body antialiased h-full bg-background">
+      <body className="font-body antialiased">
         <FirebaseClientProvider>
-          <div className="flex flex-col min-h-screen">
-            <Header />
-            <main className="flex-grow">
-              {children}
-            </main>
-          </div>
+          <Header />
+          <main className="pt-20">
+            {children}
+          </main>
           <Toaster />
         </FirebaseClientProvider>
       </body>

@@ -13,6 +13,8 @@ export default function QuizConfig() {
   const [timeLimit, setTimeLimit] = useState<string>('300'); // Default to 5 minutes
 
   const handleStart = () => {
+    // Clear any previous quiz state before starting a new one
+    localStorage.removeItem('triviaQuiz');
     router.push(`/quiz/start?time=${timeLimit}`);
   };
 

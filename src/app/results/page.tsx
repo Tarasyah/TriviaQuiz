@@ -8,7 +8,6 @@ import { collection, addDoc } from 'firebase/firestore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Trophy, Repeat, Home, Check, X, AlertCircle, Eye } from 'lucide-react';
-import Confetti from 'react-dom-confetti';
 import {
   Dialog,
   DialogContent,
@@ -34,7 +33,6 @@ export default function ResultsPage() {
   const { user } = useUser();
   const firestore = useFirestore();
   const [quizState, setQuizState] = useState<QuizState | null>(null);
-  const [showConfetti, setShowConfetti] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -69,10 +67,6 @@ export default function ResultsPage() {
   useEffect(() => {
     const saveResult = async () => {
         if (quizState && user && firestore) {
-          if (score / quizState.questions.length >= 0.7) {
-            setShowConfetti(true);
-          }
-    
           const result: Omit<QuizResult, 'id'> = {
             score,
             incorrect,
@@ -98,10 +92,15 @@ export default function ResultsPage() {
     saveResult();
   }, [quizState, user, firestore, score, incorrect, unanswered, toast]);
 
-  const clearQuizAndNavigate = (path: string) => {
+  const handlePlayAgain = () => {
     localStorage.removeItem('triviaQuiz');
-    router.push(path);
+    router.push('/quiz');
   };
+
+  const handleGoHome = () => {
+    localStorage.removeItem('triviaQuiz');
+    router.push('/');
+  }
 
   if (!quizState) {
     return <div className="flex items-center justify-center min-h-screen">Loading results...</div>;
@@ -110,18 +109,6 @@ export default function ResultsPage() {
   return (
     <div className="container mx-auto max-w-2xl py-12 flex items-center justify-center min-h-[calc(100vh-80px)]">
       <Card className="w-full text-center relative overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-          <Confetti
-            active={showConfetti}
-            config={{
-              angle: 90,
-              spread: 360,
-              startVelocity: 40,
-              elementCount: 100,
-              decay: 0.9,
-            }}
-          />
-        </div>
         <CardHeader>
           <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit">
             <Trophy className="h-16 w-16 text-primary" />
@@ -148,7 +135,7 @@ export default function ResultsPage() {
             </div>
           </div>
           <div className="flex justify-center flex-wrap gap-4 pt-4">
-            <Button onClick={() => clearQuizAndNavigate('/quiz')} size="lg">
+            <Button onClick={handlePlayAgain} size="lg">
               <Repeat className="mr-2 h-4 w-4" /> Play Again
             </Button>
             <Dialog>
@@ -201,7 +188,7 @@ export default function ResultsPage() {
                 </DialogFooter>
               </DialogContent>
             </Dialog>
-            <Button onClick={() => clearQuizAndNavigate('/')} variant="outline" size="lg">
+            <Button onClick={handleGoHome} variant="outline" size="lg">
               <Home className="mr-2 h-4 w-4" /> Go Home
             </Button>
           </div>

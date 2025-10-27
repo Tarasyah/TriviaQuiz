@@ -4,66 +4,214 @@
 
 @layer base {
   :root {
-    --background: 220 20% 98%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 259 94% 61%;
+    --background: 240 10% 98%;
+    --foreground: 224 71% 4%;
+    --card: 240 10% 100%;
+    --card-foreground: 224 71% 4%;
+    --popover: 240 10% 100%;
+    --popover-foreground: 224 71% 4%;
+    --primary: 240 5% 50%;
     --primary-foreground: 0 0% 100%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 210 40% 9.8%;
     --muted: 210 40% 96.1%;
     --muted-foreground: 210 40% 45.1%;
-    --accent: 259 94% 97%;
-    --accent-foreground: 259 94% 30%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 210 40% 9.8%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 210 40% 90%;
-    --input: 210 40% 90%;
-    --ring: 259 94% 61%;
-    --radius: 0.8rem;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 240 5% 50%;
+    --radius: 0.5rem;
+    --green: 145, 63%, 42%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 259 94% 61%;
+    --background: 240 5% 9%;
+    --foreground: 240 5% 95%;
+    --card: 240 4% 12%;
+    --card-foreground: 240 5% 95%;
+    --popover: 240 4% 12%;
+    --popover-foreground: 240 5% 95%;
+    --primary: 240 4% 30%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --secondary: 240 4% 15%;
+    --secondary-foreground: 240 5% 95%;
+    --muted: 240 4% 15%;
+    --muted-foreground: 240 5% 65%;
+    --accent: 240 4% 15%;
+    --accent-foreground: 240 5% 95%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 259 94% 61%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 4% 25%;
+    --input: 240 4% 25%;
+    --ring: 240 4% 30%;
   }
 }
 
 @layer base {
   * {
     @apply border-border;
+    box-sizing: border-box;
   }
   body {
     @apply bg-background text-foreground;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
+}
+
+#main-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 50;
+  transition: all 0.3s ease-in-out;
+}
+#main-header.header-hidden {
+  transform: translateY(-100%);
+}
+.header-gradient {
+  position: absolute;
+  inset: 0;
+  height: 6rem;
+  background-image: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
+  transition: opacity 0.3s ease-in-out;
+  pointer-events: none;
+  opacity: 1;
+}
+#main-header.scrolled .header-gradient {
+  opacity: 0;
+}
+.header-container {
+  position: relative;
+  margin: 0 auto;
+  display: flex;
+  height: 3.5rem;
+  align-items: center;
+  transition: all 0.3s ease-in-out;
+  padding: 0 1rem;
+  margin-top: 1rem;
+  justify-content: space-between;
+}
+#main-header.scrolled .header-container {
+  margin-top: 0;
+}
+.header-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  transition: all 0.3s ease-in-out;
+}
+#main-header.scrolled .header-bg {
+  background-color: hsla(var(--card), 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.logo-container { display: flex; align-items: center; }
+.logo-container a { 
+  position: relative; 
+  height: 2.5rem; 
+  width: 150px;
+}
+.logo-container img { position: absolute; inset: 0; height: 100%; width: 100%; object-fit: contain; }
+
+.desktop-nav {
+  display: none;
+  align-items: center;
+  gap: 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.nav-link {
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.3s;
+  color: rgba(255,255,255,0.8);
+}
+.nav-link:hover { color: white; }
+#main-header.scrolled .nav-link {
+  color: hsla(var(--foreground), 0.8);
+}
+#main-header.scrolled .nav-link:hover {
+  color: hsl(var(--primary));
+}
+#main-header.scrolled .nav-link.active {
+  color: hsl(var(--primary));
+  font-weight: 600;
+}
+
+.actions-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+}
+.desktop-only { display: none; }
+
+.mobile-menu-container { position: relative; }
+#mobile-menu-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 9999px;
+  display: inline-flex;
+}
+#mobile-menu-btn:hover { background-color: hsla(var(--primary), 0.2); }
+#mobile-menu-btn svg {
+  height: 1.25rem;
+  width: 1.25rem;
+  color: white;
+}
+#main-header.scrolled #mobile-menu-btn svg { color: hsl(var(--foreground)); }
+
+.mobile-menu-dropdown {
+  position: absolute;
+  top: calc(100% + 1rem);
+  right: 0;
+  background-color: hsl(var(--card));
+  border: 1px solid hsla(var(--border), 0.2);
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  width: 200px;
+  padding: 0.5rem 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+.mobile-menu-dropdown.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.menu-item {
+  display: block;
+  text-decoration: none;
+  color: hsla(var(--foreground), 0.8);
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+}
+.menu-item:hover { background-color: hsla(var(--foreground), 0.05); }
+.separator { height: 1px; background-color: hsla(var(--border), 0.5); margin: 0.25rem 0; }
+
+@media (min-width: 768px) {
+  .header-container {
+    width: 83.333333%;
+    max-width: 1280px;
+  }
+  #main-header.scrolled .header-bg {
+    border-radius: 9999px;
+  }
+  
+  .desktop-nav { 
+    display: flex;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .desktop-only { display: inline-flex; }
+  .mobile-menu-container { display: none; }
 }

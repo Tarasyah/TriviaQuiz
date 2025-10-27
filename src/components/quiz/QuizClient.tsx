@@ -14,21 +14,7 @@ export default function QuizClient({ questions, timeLimit }: QuizClientProps) {
   const router = useRouter();
 
   useEffect(() => {
-    // Check for existing quiz
-    const existingQuiz = localStorage.getItem('triviaQuiz');
-    if (existingQuiz) {
-      try {
-        const { currentQuestionIndex } = JSON.parse(existingQuiz);
-        // Resume existing quiz
-        router.replace(`/quiz/${currentQuestionIndex + 1}`);
-        return;
-      } catch (e) {
-        // Fallback for corrupted data
-        localStorage.removeItem('triviaQuiz');
-      }
-    }
-
-    // Start a new quiz
+    // Always start a new quiz, clearing any old state
     const quizState = {
       questions,
       answers: Array(questions.length).fill(null),
