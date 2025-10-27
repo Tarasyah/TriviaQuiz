@@ -1,0 +1,103 @@
+{
+  "entities": {
+    "QuizHistory": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "QuizHistory",
+      "type": "object",
+      "description": "Represents a user's quiz history entry.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the quiz history entry."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the User. (Relationship: User 1:N QuizHistory)"
+        },
+        "score": {
+          "type": "number",
+          "description": "The user's score on the quiz."
+        },
+        "date": {
+          "type": "string",
+          "description": "The date the quiz was taken.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "score",
+        "date"
+      ]
+    },
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user of the TriviaQuest application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user."
+        },
+        "email": {
+          "type": "string",
+          "description": "The user's email address.",
+          "format": "email"
+        }
+      },
+      "required": [
+        "id",
+        "email"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profile information. Path-based ownership ensures only the authenticated user (or admin) can access their data.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/quiz_history/{quizHistoryId}",
+        "definition": {
+          "entityName": "QuizHistory",
+          "schema": {
+            "$ref": "#/backend/entities/QuizHistory"
+          },
+          "description": "Stores the quiz history entries for each user. Path-based ownership enables secure list operations. The `userId` parameter ensures that only the authenticated user can access their quiz history.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            },
+            {
+              "name": "quizHistoryId",
+              "description": "The unique identifier for the quiz history entry."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to provide a secure and scalable solution for the TriviaQuest application, focusing on user authentication, quiz history, and guest access. Key design principles include Authorization Independence achieved through path-based ownership for user-specific data and structural segregation to simplify security rules. Each collection is designed with a homogeneous security posture to ensure clear and consistent access control.\n\nUser data is stored under `/users/{userId}`. Each user's quiz history is stored in a subcollection `/users/{userId}/quiz_history/{quizHistoryId}` to clearly associate quiz history entries with their respective users and enable secure list operations using path-based ownership. No denormalization is needed as user data is private.\n\nThis structure supports required QAPs by using path-based ownership, ensuring only the authenticated user can access their quiz history entries. This eliminates the need for complex filtering in rules, promoting security and efficiency."
+  }
+}
