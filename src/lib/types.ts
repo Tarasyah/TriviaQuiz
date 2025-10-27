@@ -1,5 +1,6 @@
 export interface User {
-  email: string;
+  uid: string;
+  email: string | null;
 }
 
 export interface Question {
@@ -12,6 +13,8 @@ export interface Question {
 }
 
 export interface QuizResult {
+  id: string;
+  userId: string;
   score: number;
   total: number;
   date: string;

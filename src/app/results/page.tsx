@@ -3,7 +3,8 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Question, QuizResult } from '@/lib/types';
-import { useAuth } from '@/hooks/use-auth';
+import { useUser, useFirestore, addDocumentNonBlocking } from '@/firebase';
+import { collection } from 'firebase/firestore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Trophy, Repeat, Home } from 'lucide-react';
@@ -16,7 +17,8 @@ interface QuizState {
 
 export default function ResultsPage() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user } = useUser();
+  const firestore = useFirestore();
   const [quizState, setQuizState] = useState<QuizState | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
 
@@ -37,23 +39,22 @@ export default function ResultsPage() {
   }, [quizState]);
 
   useEffect(() => {
-    if (quizState) {
+    if (quizState && user && firestore) {
         if (score / quizState.questions.length >= 0.7) {
             setShowConfetti(true);
         }
-        if (user) {
-            const result: QuizResult = {
-                score,
-                total: quizState.questions.length,
-                date: new Date().toISOString(),
-            };
-            const historyStr = localStorage.getItem(`triviaHistory_${user.email}`);
-            const history: QuizResult[] = historyStr ? JSON.parse(historyStr) : [];
-            history.unshift(result);
-            localStorage.setItem(`triviaHistory_${user.email}`, JSON.stringify(history.slice(0, 20))); // Limit history
-        }
+        
+        const result: Omit<QuizResult, 'id'> = {
+            score,
+            total: quizState.questions.length,
+            date: new Date().toISOString(),
+            userId: user.uid
+        };
+
+        const historyColRef = collection(firestore, 'users', user.uid, 'quiz_history');
+        addDocumentNonBlocking(historyColRef, result);
     }
-  }, [quizState, user, score]);
+  }, [quizState, user, score, firestore]);
 
   const handlePlayAgain = () => {
     localStorage.removeItem('triviaQuiz');

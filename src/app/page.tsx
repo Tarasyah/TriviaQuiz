@@ -5,10 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Swords, LogIn } from 'lucide-react';
 import Link from 'next/link';
 import { Logo } from '@/components/icons/Logo';
-import { useAuth } from '@/hooks/use-auth';
+import { useUser } from '@/firebase';
 
 export default function Home() {
-  const { user } = useAuth();
+  const { user } = useUser();
 
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-80px)] bg-grid-pattern">

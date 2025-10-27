@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/hooks/use-auth';
+import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import type { QuizResult } from '@/lib/types';
+import { collection, orderBy, query } from 'firebase/firestore';
 import {
   Table,
   TableBody,
@@ -18,21 +19,23 @@ import { format } from 'date-fns';
 
 export default function HistoryPage() {
   const router = useRouter();
-  const { user, loading } = useAuth();
-  const [history, setHistory] = useState<QuizResult[]>([]);
+  const { user, isUserLoading } = useUser();
+  const firestore = useFirestore();
+
+  const quizHistoryQuery = useMemoFirebase(() => {
+    if (!user || !firestore) return null;
+    return query(collection(firestore, 'users', user.uid, 'quiz_history'), orderBy('date', 'desc'));
+  }, [user, firestore]);
+  
+  const { data: history, isLoading } = useCollection<QuizResult>(quizHistoryQuery);
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!isUserLoading && !user) {
       router.replace('/login');
-    } else if (user) {
-      const storedHistory = localStorage.getItem(`triviaHistory_${user.email}`);
-      if (storedHistory) {
-        setHistory(JSON.parse(storedHistory));
-      }
     }
-  }, [user, loading, router]);
+  }, [user, isUserLoading, router]);
 
-  if (loading || !user) {
+  if (isUserLoading || isLoading || !user) {
     return <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">Loading history...</div>;
   }
 
@@ -49,7 +52,7 @@ export default function HistoryPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {history.length > 0 ? (
+          {history && history.length > 0 ? (
             <Table>
               <TableHeader>
                 <TableRow>
@@ -59,8 +62,8 @@ export default function HistoryPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {history.map((result, index) => (
-                  <TableRow key={index}>
+                {history.map((result) => (
+                  <TableRow key={result.id}>
                     <TableCell className="font-medium">{result.score} / {result.total}</TableCell>
                     <TableCell>{Math.round((result.score / result.total) * 100)}%</TableCell>
                     <TableCell>{format(new Date(result.date), 'PPpp')}</TableCell>
