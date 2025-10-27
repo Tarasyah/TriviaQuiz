@@ -7,8 +7,20 @@ import { useUser, useFirestore, addDocumentNonBlocking } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Trophy, Repeat, Home, Check, X, AlertCircle } from 'lucide-react';
+import { Trophy, Repeat, Home, Check, X, AlertCircle, Eye } from 'lucide-react';
 import Confetti from 'react-dom-confetti';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
 
 interface QuizState {
   questions: Question[];
@@ -28,8 +40,9 @@ export default function ResultsPage() {
       router.replace('/');
       return;
     }
-    setQuizState(JSON.parse(storedState));
-    localStorage.removeItem('triviaQuiz'); // Clear quiz after showing results
+    const parsedState = JSON.parse(storedState);
+    setQuizState(parsedState);
+    // We will clear storage when user navigates away
   }, [router]);
 
   const { score, incorrect, unanswered } = useMemo(() => {
@@ -70,12 +83,9 @@ export default function ResultsPage() {
     }
   }, [quizState, user, score, incorrect, unanswered, firestore]);
 
-  const handlePlayAgain = () => {
-    router.push('/quiz');
-  };
-
-  const handleGoHome = () => {
-    router.push('/');
+  const clearQuizAndNavigate = (path: string) => {
+    localStorage.removeItem('triviaQuiz');
+    router.push(path);
   };
 
   if (!quizState) {
@@ -122,11 +132,60 @@ export default function ResultsPage() {
                 <p className="text-sm text-muted-foreground">Unanswered</p>
             </div>
           </div>
-          <div className="flex justify-center gap-4 pt-4">
-            <Button onClick={handlePlayAgain} size="lg">
+          <div className="flex justify-center flex-wrap gap-4 pt-4">
+            <Button onClick={() => clearQuizAndNavigate('/quiz')} size="lg">
               <Repeat className="mr-2 h-4 w-4" /> Play Again
             </Button>
-            <Button onClick={handleGoHome} variant="outline" size="lg">
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="secondary" size="lg">
+                  <Eye className="mr-2 h-4 w-4" /> Review Answers
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-3xl">
+                <DialogHeader>
+                  <DialogTitle>Review Your Answers</DialogTitle>
+                </DialogHeader>
+                <ScrollArea className="max-h-[60vh] pr-6">
+                  <div className="space-y-6 my-4">
+                    {quizState.questions.map((question, index) => {
+                      const userAnswer = quizState.answers[index];
+                      const isCorrect = userAnswer === question.correct_answer;
+
+                      return (
+                        <div key={index}>
+                          <p className="font-semibold mb-2" dangerouslySetInnerHTML={{ __html: `${index + 1}. ${question.question}` }} />
+                          <div className="space-y-2">
+                            <p
+                              className={cn(
+                                'p-3 rounded-md text-sm',
+                                isCorrect ? 'bg-green-100 dark:bg-green-900/40 border border-green-400' : 'bg-red-100 dark:bg-red-900/40 border border-red-400'
+                              )}
+                            >
+                              <span className="font-bold">Your Answer: </span>
+                              <span dangerouslySetInnerHTML={{ __html: userAnswer ?? 'Not Answered' }} />
+                            </p>
+                            {!isCorrect && (
+                              <p className="p-3 rounded-md text-sm bg-green-100 dark:bg-green-900/40 border border-green-400">
+                                <span className="font-bold">Correct Answer: </span>
+                                <span dangerouslySetInnerHTML={{ __html: question.correct_answer }} />
+                              </p>
+                            )}
+                          </div>
+                          {index < quizState.questions.length - 1 && <Separator className="mt-6" />}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </ScrollArea>
+                <DialogFooter>
+                    <DialogClose asChild>
+                        <Button>Close</Button>
+                    </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+            <Button onClick={() => clearQuizAndNavigate('/')} variant="outline" size="lg">
               <Home className="mr-2 h-4 w-4" /> Go Home
             </Button>
           </div>
