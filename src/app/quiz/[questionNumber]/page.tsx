@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import type { Question } from '@/lib/types';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
@@ -99,7 +99,7 @@ export default function QuestionPage() {
   };
 
   if (!quizState || !currentQuestion) {
-    return <div className="flex items-center justify-center min-h-[calc(100vh-80px)]"><p>Loading question...</p></div>;
+    return <div className="flex items-center justify-center min-h-screen"><p>Loading question...</p></div>;
   }
 
   return (
@@ -120,7 +120,6 @@ export default function QuestionPage() {
         
         <Card>
           <CardHeader>
-            <CardDescription>{currentQuestion.category} ({currentQuestion.difficulty})</CardDescription>
             <CardTitle className="text-2xl font-headline" dangerouslySetInnerHTML={{ __html: currentQuestion.question }}/>
           </CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -130,9 +129,9 @@ export default function QuestionPage() {
 
               if (isAnswered) {
                 if (option === currentQuestion.correct_answer) {
-                  buttonStyle = { backgroundColor: 'var(--success-color, #28a745)', color: 'white' };
+                  buttonStyle = { backgroundColor: 'hsl(var(--green))', color: 'white' };
                 } else if (isSelected) {
-                  buttonStyle = { backgroundColor: 'var(--destructive-color, #dc3545)', color: 'white' };
+                  buttonStyle = { backgroundColor: 'hsl(var(--destructive))', color: 'white' };
                 }
               }
 
