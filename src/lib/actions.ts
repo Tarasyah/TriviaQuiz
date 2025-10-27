@@ -6,12 +6,16 @@ export async function getTriviaQuestions(): Promise<Question[]> {
   try {
     const response = await fetch('https://opentdb.com/api.php?amount=10&type=multiple&encode=base64');
     if (!response.ok) {
-      throw new Error('Failed to fetch trivia questions.');
+      // Instead of throwing, log the error and return empty array
+      console.error('Failed to fetch trivia questions. Status:', response.status);
+      return [];
     }
     const data = await response.json();
     
     if (data.response_code !== 0) {
-      throw new Error('Invalid response from trivia API.');
+      // Log the specific API error and return empty
+      console.error('Trivia API returned an error code:', data.response_code);
+      return [];
     }
     
     // Decode base64 encoded strings
