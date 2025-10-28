@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -51,7 +52,7 @@ export default function Header() {
   return (
     <header className="header">
       <Link href="/" className="logo">
-         <Logo className={cn("w-auto h-full", isHomePage && !isMobileMenuOpen ? "text-white" : "text-foreground")} />
+         <Logo className={cn("w-auto h-full", isHomePage ? "text-white" : "text-foreground")} />
       </Link>
       
       <input 
@@ -63,7 +64,7 @@ export default function Header() {
       />
       <label className="menu-icon" htmlFor="menu-btn"><span className="navicon"></span></label>
       
-      <ul className={cn("menu", isHomePage && isMobileMenuOpen && "bg-background/90 backdrop-blur-sm")}>
+      <ul className={cn("menu", isHomePage && isMobileMenuOpen ? "bg-black/60 backdrop-blur-sm" : "")}>
         {navLinks.map((link) => (
           (!link.userRequired || user) && (
             <li key={link.href}>
