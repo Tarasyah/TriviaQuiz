@@ -2,6 +2,7 @@
 
 import type { Metadata } from 'next';
 import './globals.css';
+import './menu.css';
 import { Toaster } from "@/components/ui/toaster";
 import Header from '@/components/Header';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
@@ -31,10 +32,10 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
         <meta name="view-transition" content="same-origin" />
       </head>
-      <body className={cn("font-body antialiased", !isHomePage && "grid-bg")}>
+      <body className={cn("font-body antialiased grid-bg")}>
         <FirebaseClientProvider>
           <Header />
-          <main className={cn(!isHomePage && "pt-14")}>
+          <main className={cn("pt-20")}>
             {children}
           </main>
           <Toaster />

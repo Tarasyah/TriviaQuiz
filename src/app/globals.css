@@ -62,7 +62,7 @@
     background-image:
       linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px),
       linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px);
-    background-size: 40px 40px;
+    background-size: 80px 80px;
   }
 }
 
@@ -159,78 +159,13 @@
   border-color: hsl(var(--border));
 }
 
-.actions-container {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.mobile-menu-container { position: relative; }
-#mobile-menu-btn {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 9999px;
-  display: inline-flex;
-}
-#mobile-menu-btn:hover { background-color: hsla(var(--primary), 0.2); }
-#mobile-menu-btn svg {
-  height: 1.25rem;
-  width: 1.25rem;
-  color: hsl(var(--foreground));
-}
-
-#main-header.transparent-header #mobile-menu-btn svg {
-    color: white;
-}
-#main-header.scrolled #mobile-menu-btn svg { color: hsl(var(--foreground)); }
-
-.mobile-menu-dropdown {
-  position: absolute;
-  top: calc(100% + 1rem);
-  right: 0;
-  background-color: hsl(var(--card));
-  border: 1px solid hsla(var(--border), 0.2);
-  border-radius: 0.5rem;
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  width: 200px;
-  padding: 0.5rem 0;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-10px);
-  transition: opacity 0.2s, transform 0.2s;
-}
-.mobile-menu-dropdown.open {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-.menu-item {
-  display: block;
-  text-decoration: none;
-  color: hsla(var(--foreground), 0.8);
-  padding: 0.75rem 1rem;
-  font-size: 1rem;
-}
-.menu-item:hover { background-color: hsla(var(--foreground), 0.05); }
-.separator { height: 1px; background-color: hsla(var(--border), 0.5); margin: 0.25rem 0; }
-
 @media (min-width: 768px) {
   .header-container {
     max-width: 1280px;
+    justify-content: center;
   }
   
   .desktop-nav { 
     display: flex;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  .actions-container {
-    display: none;
   }
 }
