@@ -63,7 +63,7 @@ export default function Header() {
       />
       <label className="menu-icon" htmlFor="menu-btn"><span className="navicon"></span></label>
       
-      <ul className="menu">
+      <ul className={cn("menu", isHomePage && isMobileMenuOpen && "bg-background/90 backdrop-blur-sm")}>
         {navLinks.map((link) => (
           (!link.userRequired || user) && (
             <li key={link.href}>
