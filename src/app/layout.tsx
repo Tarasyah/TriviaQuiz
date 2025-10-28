@@ -35,7 +35,7 @@ export default function RootLayout({
       <body className={cn("font-body antialiased grid-bg")}>
         <FirebaseClientProvider>
           <Header />
-          <main className={cn("pt-20")}>
+          <main className={cn({ "pt-20": !isHomePage })}>
             {children}
           </main>
           <Toaster />
