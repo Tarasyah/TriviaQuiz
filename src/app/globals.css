@@ -100,6 +100,7 @@
 }
 #main-header.scrolled .header-container {
   margin-top: 0;
+  height: 3.5rem;
 }
 .header-bg {
   position: absolute;
@@ -164,7 +165,6 @@
   align-items: center;
   gap: 0.5rem;
 }
-.desktop-only { display: none; }
 
 .mobile-menu-container { position: relative; }
 #mobile-menu-btn {
@@ -221,10 +221,6 @@
   .header-container {
     max-width: 1280px;
   }
-  #main-header.scrolled:not(.transparent-header) .header-bg {
-    margin: 0.5rem 1rem;
-    border-radius: 9999px;
-  }
   
   .desktop-nav { 
     display: flex;
@@ -234,11 +230,7 @@
     transform: translate(-50%, -50%);
   }
 
-  .desktop-only { display: inline-flex; }
-  .mobile-menu-container { display: none; }
-
-  /* Push the mobile menu button to the right on desktop, inside actions-container */
   .actions-container {
-      display: none;
+    display: none;
   }
 }

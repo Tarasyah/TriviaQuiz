@@ -115,7 +115,7 @@ export default function Header() {
               </Link>
             )
           ))}
-          <div className="h-4 border-l border-white/30" />
+          {user && <div className="h-4 border-l border-white/30" />}
            {isUserLoading ? (
             <div className="h-8 w-20 rounded-full bg-gray-500/50 animate-pulse" />
           ) : user ? (
@@ -144,6 +144,7 @@ export default function Header() {
             </DropdownMenu>
           ) : (
             <>
+              <div className="h-4 border-l border-white/30" />
               <Link href="/login" className="nav-link">Login</Link>
               <Button asChild size="sm" className="rounded-full">
                 <Link href="/signup">Sign Up</Link>
@@ -164,7 +165,15 @@ export default function Header() {
               ))}
                <div className="separator" />
                {user ? (
-                 <button onClick={handleLogout} className="menu-item w-full text-left">Logout</button>
+                <>
+                  <div className="px-4 py-2">
+                     <p className="text-sm font-medium leading-none">Signed in as</p>
+                    <p className="text-xs leading-none text-muted-foreground truncate">
+                      {user.email}
+                    </p>
+                  </div>
+                  <button onClick={handleLogout} className="menu-item w-full text-left">Logout</button>
+                </>
                ) : (
                  <>
                   <Link href="/login" className="menu-item">Login</Link>
