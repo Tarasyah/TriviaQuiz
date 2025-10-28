@@ -50,7 +50,7 @@ export default function Header() {
   }, [pathname]);
 
   return (
-    <header className="header">
+    <header className={cn("header", isHomePage ? "transparent-header" : "")}>
       <Link href="/" className="logo">
          <Logo className={cn("w-auto h-full", isHomePage ? "text-white" : "text-foreground")} />
       </Link>
@@ -64,7 +64,7 @@ export default function Header() {
       />
       <label className="menu-icon" htmlFor="menu-btn"><span className="navicon"></span></label>
       
-      <ul className={cn("menu", isHomePage && isMobileMenuOpen ? "bg-black/60 backdrop-blur-sm" : "")}>
+      <ul className={cn("menu", isHomePage && "bg-transparent")}>
         {navLinks.map((link) => (
           (!link.userRequired || user) && (
             <li key={link.href}>

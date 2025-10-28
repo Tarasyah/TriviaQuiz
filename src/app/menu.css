@@ -11,11 +11,15 @@ a {
 /* header */
 
 .header {
-  background-color: transparent;
+  background-color: #fff;
   position: fixed;
   width: 100%;
-  z-index: 3;
+  z-index: 50;
 }
+.header.transparent-header {
+  background-color: transparent;
+}
+
 
 .header ul {
   margin: 0;
@@ -24,6 +28,14 @@ a {
   overflow: hidden;
   background-color: #fff;
 }
+.header.transparent-header .menu{
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+}
+.header.transparent-header li a {
+    color: white;
+}
+
 
 .header li a {
   display: block;
@@ -36,6 +48,12 @@ a {
 .header .menu-btn:hover {
   background-color: #f4f4f4;
 }
+
+.header.transparent-header li a:hover,
+.header.transparent-header .menu-btn:hover {
+  background-color: rgba(255,255,255,0.1);
+}
+
 
 .header .logo {
   display: block;
@@ -63,6 +81,7 @@ a {
   padding: 28px 20px;
   position: relative;
   user-select: none;
+  z-index: 51;
 }
 
 .header .menu-icon .navicon {
@@ -72,6 +91,9 @@ a {
   position: relative;
   transition: background .2s ease-out;
   width: 18px;
+}
+.header.transparent-header .menu-icon .navicon {
+    background: white;
 }
 
 .header .menu-icon .navicon:before,
@@ -83,6 +105,10 @@ a {
   position: absolute;
   transition: all .2s ease-out;
   width: 100%;
+}
+.header.transparent-header .menu-icon .navicon:before,
+.header.transparent-header .menu-icon .navicon:after {
+    background: white;
 }
 
 .header .menu-icon .navicon:before {
@@ -100,7 +126,7 @@ a {
 }
 
 .header .menu-btn:checked ~ .menu {
-  max-height: 240px;
+  max-height: 340px;
 }
 
 .header .menu-btn:checked ~ .menu-icon .navicon {
@@ -133,6 +159,8 @@ a {
     clear: none;
     float: right;
     max-height: none;
+    background-color: transparent !important;
+    backdrop-filter: none !important;
   }
   .header .menu-icon {
     display: none;
